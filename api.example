@@ -1,0 +1,156 @@
+# API Examples (FastAPI Gemini Service)
+#
+# Base URL (local):
+#   http://127.0.0.1:8000
+#
+# Auth:
+#   Use Bearer token for protected endpoints.
+#   Swagger UI: click "Authorize" and paste "Bearer <token>".
+
+────────────────────────────────────────────────────────
+AUTH
+────────────────────────────────────────────────────────
+
+1) Register
+POST /auth/register
+Content-Type: application/json
+
+Request:
+{
+  "email": "user@example.com",
+  "password": "StrongP@ssw0rd"
+}
+
+Response:
+{
+  "id": 1,
+  "email": "user@example.com",
+  "created_at": "2026-02-04T12:00:00.000Z"
+}
+
+curl:
+curl -X POST http://127.0.0.1:8000/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"email":"user@example.com","password":"StrongP@ssw0rd"}'
+
+2) Login (OAuth2 form)
+POST /auth/login
+Content-Type: application/x-www-form-urlencoded
+
+Request:
+username=user@example.com&password=StrongP@ssw0rd
+
+Response:
+{
+  "access_token": "<JWT>",
+  "token_type": "bearer",
+  "expires_in": 86400
+}
+
+curl:
+curl -X POST http://127.0.0.1:8000/auth/login \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "username=user@example.com&password=StrongP@ssw0rd"
+
+────────────────────────────────────────────────────────
+GEMINI (requires Bearer token)
+────────────────────────────────────────────────────────
+
+1) Send prompt
+POST /gemini/requests
+Authorization: Bearer <JWT>
+Content-Type: application/json
+
+Request:
+{
+  "prompt": "Hi Gemini!",
+  "model_version": "gemini-3-flash-preview"
+}
+
+Response:
+{
+  "id": 1,
+  "request_id": "c4a1b9a8-6d5b-4f1a-8b9c-28a2c8c8b9a1",
+  "prompt": "Hi Gemini!",
+  "model_version": "gemini-3-flash-preview",
+  "response": "Hello!",
+  "created_at": "2026-02-04T12:00:00.000Z",
+  "updated_at": "2026-02-04T12:00:00.000Z"
+}
+
+curl:
+curl -X POST http://127.0.0.1:8000/gemini/requests \
+  -H "Authorization: Bearer <JWT>" \
+  -H "Content-Type: application/json" \
+  -d '{"prompt":"Hi Gemini!","model_version":"gemini-3-flash-preview"}'
+
+2) My history
+GET /gemini/requests?limit=50&offset=0
+Authorization: Bearer <JWT>
+
+Response:
+{
+  "total": 1,
+  "limit": 50,
+  "offset": 0,
+  "items": [
+    {
+      "id": 1,
+      "request_id": "c4a1b9a8-6d5b-4f1a-8b9c-28a2c8c8b9a1",
+      "prompt": "Hi Gemini!",
+      "response": "Hello!",
+      "model_version": "gemini-3-flash-preview",
+      "created_at": "2026-02-04T12:00:00.000Z",
+      "updated_at": "2026-02-04T12:00:00.000Z"
+    }
+  ]
+}
+
+curl:
+curl -X GET "http://127.0.0.1:8000/gemini/requests?limit=50&offset=0" \
+  -H "Authorization: Bearer <JWT>"
+
+────────────────────────────────────────────────────────
+ADMIN (requires admin token)
+────────────────────────────────────────────────────────
+
+1) List users
+GET /admin/users?limit=50&offset=0
+Authorization: Bearer <ADMIN_JWT>
+
+curl:
+curl -X GET "http://127.0.0.1:8000/admin/users?limit=50&offset=0" \
+  -H "Authorization: Bearer <ADMIN_JWT>"
+
+2) Get user by id
+GET /admin/users/{user_id}
+Authorization: Bearer <ADMIN_JWT>
+
+curl:
+curl -X GET "http://127.0.0.1:8000/admin/users/1" \
+  -H "Authorization: Bearer <ADMIN_JWT>"
+
+3) Update user access
+PATCH /admin/users/{user_id}/access
+Authorization: Bearer <ADMIN_JWT>
+Content-Type: application/json
+
+Request:
+{
+  "is_active": true,
+  "is_admin": false
+}
+
+curl:
+curl -X PATCH "http://127.0.0.1:8000/admin/users/1/access" \
+  -H "Authorization: Bearer <ADMIN_JWT>" \
+  -H "Content-Type: application/json" \
+  -d '{"is_active":true,"is_admin":false}'
+
+4) List all Gemini requests
+GET /admin/gemini/requests?limit=50&offset=0&user_id=1
+Authorization: Bearer <ADMIN_JWT>
+
+curl:
+curl -X GET "http://127.0.0.1:8000/admin/gemini/requests?limit=50&offset=0&user_id=1" \
+  -H "Authorization: Bearer <ADMIN_JWT>"

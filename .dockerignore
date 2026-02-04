@@ -1,0 +1,46 @@
+# Python / caches
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.pyright/
+.coverage
+htmlcov/
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# Logs
+logs/
+*.log
+*.log.*
+*.zip
+
+# OS / IDE
+.DS_Store
+.idea/
+.vscode/
+*.iml
+
+# Git
+.git/
+.gitignore
+
+# Tests (not needed for runtime image)
+tests/
+
+# Local DB files
+*.db
+*.sqlite
+*.sqlite3
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
