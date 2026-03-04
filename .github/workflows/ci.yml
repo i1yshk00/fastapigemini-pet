@@ -7,12 +7,12 @@ on:
   pull_request:
 
 concurrency:
-  group: ci-${{ github.workflow }}-${{ github.ref }}
+  group: ci-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  tests:
-    name: Tests (Python 3.12)
+  lint:
+    name: Lint (ruff)
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -23,9 +23,34 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+          cache: poetry
 
-      - name: Echoing
-        run: echo "Hello world" echo "Test action!"
+      - name: Install Poetry
+        run: python -m pip install --upgrade pip poetry==1.8.4
+
+      - name: Install dependencies
+        run: poetry install --no-interaction --no-ansi
+
+      - name: Install ruff
+        run: poetry run python -m pip install ruff
+
+      - name: Run linter
+        run: poetry run ruff check app tests --select E9,F63,F7,F82 --output-format=github
+
+  tests:
+    name: Tests (Python 3.12)
+    needs: lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: poetry
 
       - name: Install Poetry
         run: python -m pip install --upgrade pip poetry==1.8.4
