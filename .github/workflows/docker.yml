@@ -34,7 +34,7 @@ jobs:
 
       - name: Trivy scan (non-blocking baseline)
         continue-on-error: true
-        uses: aquasecurity/trivy-action@0.28.0
+        uses: aquasecurity/trivy-action@0.34.2
         with:
           image-ref: fastapi-gemini:ci
           vuln-type: os,library
