@@ -332,7 +332,7 @@ python scripts/create_admin.py --email admin@example.com --password "StrongP@ssw
 * [ ] Rate limiting
 * [ ] Retry + backoff для Gemini
 * [ ] Docker / docker-compose
-* [ ] CI (GitHub Actions)
+* [x] CI (GitHub Actions)
 
 ---
 
